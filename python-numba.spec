@@ -11,6 +11,9 @@ Source:         %{pypi_source numba}
 
 BuildRequires:  python3-devel
 BuildRequires:  gcc
+# numba builds the _dispatcher C++ extension (numba/_dispatcher.cpp), so g++ is
+# required in addition to the C compiler.
+BuildRequires:  gcc-c++
 
 
 # Fill in the actual package description to submit package to Fedora
