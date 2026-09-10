@@ -47,7 +47,11 @@ Summary:        %{summary}
 
 
 %check
-%pyproject_check_import
+# Exclude optional modules that import unavailable backends: the CUDA test suite
+# (needs a CUDA toolchain/driver), the gdb pretty-printer and dump_style helper,
+# the Jupyter notebook test helper, and the distutils/setuptools pycc usecases.
+# None are used at runtime by our consumers.
+%pyproject_check_import -e 'numba.cuda.tests.*' -e numba.misc.dump_style -e numba.misc.gdb_print_extension -e numba.testing.notebook -e 'numba.tests.pycc_distutils_usecase.*'
 
 
 %files -n python3-numba -f %{pyproject_files}
