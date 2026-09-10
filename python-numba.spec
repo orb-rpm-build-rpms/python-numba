@@ -52,9 +52,17 @@ Summary:        %{summary}
 # the Jupyter notebook test helper, and the distutils/setuptools pycc usecases.
 # None are used at runtime by our consumers.
 %pyproject_check_import -e 'numba.cuda.tests.*' -e numba.misc.dump_style -e numba.misc.gdb_print_extension -e numba.testing.notebook -e 'numba.tests.pycc_distutils_usecase.*'
+# The check imports numba's cache test fixtures (e.g. cfunc_cache_usecases),
+# whose @cfunc(cache=True) functions compile eagerly and write numba's on-disk
+# cache (.nbi index, .nbc host-CPU machine code) into the buildroot. These are
+# test-suite artifacts, not runtime files: numba recreates them per-user in a
+# writable cache dir on demand, and CPU-specific data would not match other
+# hosts anyway. Drop them so they are not packaged.
+find %{buildroot} -type f \( -name '*.nbc' -o -name '*.nbi' \) -delete
 
 
 %files -n python3-numba -f %{pyproject_files}
+%{_bindir}/numba
 
 
 %changelog
